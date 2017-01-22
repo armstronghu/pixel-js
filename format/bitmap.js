@@ -5,20 +5,20 @@ const Type = require('../lib/type')
 const Color = require('../lib/color')
 
 const FILE_HEADER = {
-    "bfType": Type(2, 'CHAR', 'BIG'),
+    "bfType": Type(2, 'BM', 'CHAR', 'BIG'),
     "bfSize": Type(4),
     "bfReserved1": Type(2),
     "bfReserved2": Type(2),
-    "bf0ffBits": Type(4),
+    "bf0ffBits": Type(4, 54),
 }
 
 const IMAGE_HEADER = {
-    "biSze": Type(4),
+    "biSze": Type(4, 40),
     "biWidth": Type(4),
     "biHeight": Type(4),
-    "biPlanes": Type(2),
-    "biBitCount": Type(2),
-    "biCompression": Type(2),
+    "biPlanes": Type(2, 1),
+    "biBitCount": Type(2, 24),
+    "biCompression": Type(4),
     "biSizeImage": Type(4),
     "biXPelsPerMeter": Type(4),
     "biYPelsPerMeter": Type(4),
@@ -30,9 +30,10 @@ const Format = require('./defaultformatclass')
 module.exports = class BMP extends Format {
 
     constructor(binary) {
-        this.binary = binary;
+        super(binary);
 
-        super(binary, this.GetHeader(), this.GetPixels())
+        this.header = this.GetHeader();
+        this.pixels = this.GetPixels();
     }
 
     Export(binary) {
@@ -98,26 +99,61 @@ module.exports = class BMP extends Format {
         }[bitCount]()
     }
 
-    static ToBinary(header, pixels) {
+    static ToBinary(header = { fileHeader: {}, imageHeader: {} }, pixels) {
 
-        let binary;
+        let { fileHeader, imageHeader } = defaultHeader(pixels)
+        fileHeader = Object.assign(fileHeader, header.fileHeader)
+        imageHeader = Object.assign(imageHeader, header.imageHeader)
 
-        const width = header.imageHeader.biWidth,
-            height = header.imageHeader.biHeight;
+        let binary = Buffer.alloc(0);
 
+        let headerBuffer = Buffer.alloc(0);
+        _.each(fileHeader, (value, key) => {
+            let valueBuffer = value.ValueToBuffer();
+            headerBuffer = Buffer.concat([headerBuffer, valueBuffer])
+        })
+
+        _.each(imageHeader, (value, key) => {
+            let valueBuffer = value.ValueToBuffer();
+            headerBuffer = Buffer.concat([headerBuffer, valueBuffer])
+        })
+        binary = Buffer.concat([binary, headerBuffer]);
+
+        const width = imageHeader.biWidth.value,
+            height = imageHeader.biHeight.value;
+
+        let pixelBuffer = Buffer.alloc(0);
         for (var h = 0; h < height; ++h) {
             for (var w = 0; w < width; ++w) {
                 const color = pixels[h][w];
 
-                let buffer = new Uint8Array(3)
-                buffer[0] = color.B
-                buffer[1] = color.G
-                buffer[2] = color.R
-
-                binary.append(buffer)
+                let buffer = Buffer.allocUnsafe(3);
+                buffer.writeUInt8(color.B, 0);
+                buffer.writeUInt8(color.G, 1);
+                buffer.writeUInt8(color.R, 2);
+                
+                pixelBuffer = Buffer.concat([pixelBuffer, buffer])
             }
         }
-        
+        binary = Buffer.concat([binary, pixelBuffer]);
+
         return binary;
     }
+}
+
+function defaultHeader(pixels) {
+    const width = pixels[0].length,
+        height = pixels.length,
+        bitCount = 24;
+
+    let DEFAULT_FILE_HEADER = _.clone(FILE_HEADER)
+    DEFAULT_FILE_HEADER.bfSize.SetValue(width * height * (bitCount / 8) + 54)
+
+    let DEFAULT_IMAGE_HEADER = _.clone(IMAGE_HEADER)
+    DEFAULT_IMAGE_HEADER.biWidth.SetValue(width);
+    DEFAULT_IMAGE_HEADER.biHeight.SetValue(height);
+    DEFAULT_IMAGE_HEADER.biBitCount.SetValue(bitCount);
+
+
+    return { fileHeader: DEFAULT_FILE_HEADER, imageHeader: DEFAULT_IMAGE_HEADER };
 }

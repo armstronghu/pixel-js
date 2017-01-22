@@ -35,7 +35,9 @@ module.exports = class pixelJS {
             "bmp": require('./format/bitmap')
         }[EXT]
 
-        
+        const binary = FormatClass.ToBinary(headerOption, this.Pixels)
+        BinarySaver(__filePath, binary)
+
         return true;
     }
 

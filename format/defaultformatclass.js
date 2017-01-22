@@ -1,9 +1,6 @@
 module.exports = class Format {
-    constructor(binary, header, pixels) {
+    constructor(binary) {
         this.binary = binary;
-
-        this.heaer = header;
-        this.pixels = pixels;
     }
 
     Export() {}
