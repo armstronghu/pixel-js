@@ -1,1 +1,1 @@
-# pixlel-js
+# pixel-js
