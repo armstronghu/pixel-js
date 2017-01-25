@@ -1,29 +1,29 @@
 'use strict'
 
 const _ = require('lodash')
-const Type = require('../lib/type')
+const {bType, lType} = require('../lib/type')
 const Color = require('../lib/color')
 
 const FILE_HEADER = {
-    "bfType": Type(2, 'BM', 'CHAR', 'BIG'),
-    "bfSize": Type(4),
-    "bfReserved1": Type(2),
-    "bfReserved2": Type(2),
-    "bf0ffBits": Type(4, 54),
+    "bfType": bType('char=BM'),
+    "bfSize": lType('int32'),
+    "bfReserved1": lType('int16'),
+    "bfReserved2": lType('int16'),
+    "bf0ffBits": lType('int32=54'),
 }
 
 const IMAGE_HEADER = {
-    "biSze": Type(4, 40),
-    "biWidth": Type(4),
-    "biHeight": Type(4),
-    "biPlanes": Type(2, 1),
-    "biBitCount": Type(2, 24),
-    "biCompression": Type(4),
-    "biSizeImage": Type(4),
-    "biXPelsPerMeter": Type(4),
-    "biYPelsPerMeter": Type(4),
-    "biClrUsed": Type(4),
-    "biClrImportant": Type(4)
+    "biSze": lType('int32=40'),
+    "biWidth": lType('int32'),
+    "biHeight": lType('int32'),
+    "biPlanes": lType('int16=1'),
+    "biBitCount": lType('int16=24'),
+    "biCompression": lType('int32'),
+    "biSizeImage": lType('int32'),
+    "biXPelsPerMeter": lType('int32'),
+    "biYPelsPerMeter": lType('int32'),
+    "biClrUsed": lType('int32'),
+    "biClrImportant": lType('int32')
 }
 
 const Format = require('./defaultformatclass')
@@ -36,12 +36,9 @@ module.exports = class BMP extends Format {
         this.pixels = this.GetPixels();
     }
 
-    Export(binary) {
-
-    }
     get Width() { return this.header.imageHeader.biWidth }
     get Height() { return this.header.imageHeader.biHeight }
-
+    
     GetHeader() {
         if (this.IsValid() == false) throw Error("binary가 존재하지 않습니다.")
 
@@ -50,17 +47,15 @@ module.exports = class BMP extends Format {
 
         let fileHeader = {};
         _.map(FILE_HEADER, (value, key) => {
-            let buffer = binary.slice(pin, pin += value.byteLength);
-
-            let iValue = value.BufferToValue(buffer);
+            let iValue = value.BufferToValue(binary, pin);
+            pin += value.length
             fileHeader[key] = iValue
         })
 
         let imageHeader = {};
         _.map(IMAGE_HEADER, (value, key) => {
-            let buffer = binary.slice(pin, pin += value.byteLength)
-
-            let iValue = value.BufferToValue(buffer);
+            let iValue = value.BufferToValue(binary, pin);
+            pin += value.length
             imageHeader[key] = iValue;
         })
 
@@ -90,10 +85,14 @@ module.exports = class BMP extends Format {
     GetColor(binary, pin, bitCount) {
         return {
             "24": () => {
-                const Int8 = Type(1)
-                const B = Int8.BufferToValue(binary.slice(pin, pin += 1))
-                const G = Int8.BufferToValue(binary.slice(pin, pin += 1))
-                const R = Int8.BufferToValue(binary.slice(pin, pin += 1))
+                const Int8 = lType('int8')
+                const byteLength = Int8.length
+                const B = Int8.BufferToValue(binary, pin)
+                pin += byteLength
+                const G = Int8.BufferToValue(binary, pin)
+                pin += byteLength
+                const R = Int8.BufferToValue(binary, pin)
+                pin += byteLength
                 return new Color(R, G, B);
             }
         }[bitCount]()

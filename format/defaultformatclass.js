@@ -1,9 +1,11 @@
 module.exports = class Format {
     constructor(binary) {
         this.binary = binary;
+        this.header;
+        this.pixels;
     }
 
-    Export() {}
+    static ToBinary() {}
 
     IsValid() { return this.binary != undefined }
 
