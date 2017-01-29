@@ -5,19 +5,19 @@ const {bType, lType} = require('../lib/type')
 const Color = require('../lib/color')
 
 const FILE_HEADER = {
-    "bfType": bType('char=BM'),
+    "bfType": bType('char = BM'),
     "bfSize": lType('int32'),
     "bfReserved1": lType('int16'),
     "bfReserved2": lType('int16'),
-    "bf0ffBits": lType('int32=54'),
+    "bf0ffBits": lType('int32 = 54'),
 }
 
 const IMAGE_HEADER = {
-    "biSze": lType('int32=40'),
+    "biSze": lType('int32 = 40'),
     "biWidth": lType('int32'),
     "biHeight": lType('int32'),
-    "biPlanes": lType('int16=1'),
-    "biBitCount": lType('int16=24'),
+    "biPlanes": lType('int16 = 1'),
+    "biBitCount": lType('int16 = 24'),
     "biCompression": lType('int32'),
     "biSizeImage": lType('int32'),
     "biXPelsPerMeter": lType('int32'),
