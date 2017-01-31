@@ -50,6 +50,12 @@ module.exports = class pixelJS {
     get Width() { return this.format.Width }
     get Height() { return this.format.Height }
     get Pixels() { return this.format.Pixels }
+
+    static filter(filterType) {
+        return {
+            "gray": require('./filter/gray')
+        }[filterType]
+    }
 }
 
 const SURPORTTED_TYPE = ['bmp'] //... png, jpeg, gif
