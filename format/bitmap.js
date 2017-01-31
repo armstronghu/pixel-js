@@ -76,6 +76,7 @@ module.exports = class BMP extends Format {
             pixels[h] = new Array(width)
             for (var w = 0; w < width; ++w) {
                 const color = this.GetColor(binary, pin, bitCount)
+                pin += color.length
                 pixels[h][w] = color;
             }
         }
@@ -93,7 +94,9 @@ module.exports = class BMP extends Format {
                 pin += byteLength
                 const R = Int8.BufferToValue(binary, pin)
                 pin += byteLength
-                return new Color(R, G, B);
+                let color = new Color(R, G, B)
+                color.length = 3
+                return color;
             }
         }[bitCount]()
     }
