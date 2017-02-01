@@ -53,7 +53,8 @@ module.exports = class pixelJS {
 
     static filter(filterType) {
         return {
-            "gray": require('./filter/gray')
+            "gray": require('./filter/gray'),
+            "blur": require('./filter/blur')
         }[filterType]
     }
 }
