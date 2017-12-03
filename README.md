@@ -10,18 +10,25 @@ npm install
 node test/test
 ```
 ```
-const pixelJS = require('pixel-js')
+'use strict'
 
-let bmp = new pixelJS()
-bmp.Load('./test/RED.BMP')
+const pixelJS = require('../app');
 
-let pixels = bmp.Pixels
-for (let i = 0, h = bmp.Height; i < h; i++) {
-    for (let j = 0, w = bmp.Width; j < w; j++) {
-        let c = pixels[i][j]
-        c.rgb = [0, 0, 255]
-    }
-}
+let png = new pixelJS();
 
-bmp.Save('./test/BLUE.bmp')
+png.On('onloaded', () => {
+
+    pixelJS.filter('blur')(png.Pixels, png.Width, png.Height);
+    pixelJS.filter('bit')(png.Pixels, png.Width, png.Height, 3);
+    pixelJS.filter('downsampling')(png.Pixels, png.Width, png.Height, 5);
+    pixelJS.filter('bright')(png.Pixels, png.Width, png.Height);
+
+    png.Save('./test/_cat.png');
+});
+
+png.Load('./test/cat.png');
 ```
+
+<image src = https://github.com/keicoon/pixel-js/blob/master/test/dog.png > <image src = https://github.com/keicoon/pixel-js/blob/master/test/_dog.png >
+    
+<image src = https://github.com/keicoon/pixel-js/blob/master/test/cat.png > <image src = https://github.com/keicoon/pixel-js/blob/master/test/_cat.png >
