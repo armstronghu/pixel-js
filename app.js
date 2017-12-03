@@ -10,6 +10,19 @@ module.exports = class pixelJS {
     constructor(...params) {
         this.opts = params;
         this.bLoaded = false;
+
+        this.event_map = {
+            "emit": (__event_name) => {
+                if (this.event_map[__event_name]) {
+                    const func = this.event_map[__event_name];
+                    func();
+                }
+            }
+        };
+    }
+
+    On(__event_name, func) {
+        this.event_map[__event_name] = func;
     }
 
     Load(__filePath) {
@@ -23,7 +36,7 @@ module.exports = class pixelJS {
         const bParsingSucced = this.format = Parse(EXT, BINARY)
         if (!bParsingSucced) throw Error('올바른 파일구조가 아닙니다.')
 
-        this.bLoaded = true;
+        this.format.event_map = this.event_map;
     }
 
     Save(__filePath, headerOption) {
@@ -31,11 +44,8 @@ module.exports = class pixelJS {
         const EXT = GetPathToEXT(__filePath)
         IsValidEXT(EXT)
 
-        const FormatClass = {
-            "bmp": require('./format/bitmap')
-        }[EXT]
-
-        const binary = FormatClass.ToBinary(headerOption, this.Pixels)
+        const FormatClass = GetFormatClass(EXT);
+        const binary = FormatClass.ToBinary(headerOption, this.Pixels, this.format)
         BinarySaver(__filePath, binary)
 
         return true;
@@ -45,21 +55,26 @@ module.exports = class pixelJS {
         // release memory
     }
 
-    IsLoaded() { return this.bLoaded }
-
     get Width() { return this.format.Width }
     get Height() { return this.format.Height }
     get Pixels() { return this.format.Pixels }
 
     static filter(filterType) {
-        return {
+        const __filter = {
             "gray": require('./filter/gray'),
             "blur": require('./filter/blur')
-        }[filterType]
+        }[filterType];
+        if (__filter) {
+            return __filter.Set
+        } else {
+            return () => {
+                console.warn("Can't find filter", filterType);
+            };
+        }
     }
 }
 
-const SURPORTTED_TYPE = ['bmp'] //... png, jpeg, gif
+const SURPORTTED_TYPE = ['bmp', 'png'] //... jpeg, gif
 
 function GetPathToEXT(__filePath) {
     return _.last(_.split(__filePath, '.')).toLowerCase()
@@ -71,10 +86,15 @@ function IsValidEXT(EXT) {
     return true;
 }
 
+function GetFormatClass(EXT) {
+    return {
+        "bmp": require('./format/bitmap'),
+        "png": require('./format/pngjs')
+    }[EXT];
+}
+
 function Parse(EXT, binary) {
-    const FormatClass = {
-        "bmp": require('./format/bitmap')
-    }[EXT]
+    const FormatClass = GetFormatClass(EXT);
 
     if (FormatClass && binary)
         return new FormatClass(binary)

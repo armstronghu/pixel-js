@@ -22,7 +22,7 @@ BM.Set('Load')
 // pixelJS.filter('gray').ConvertGray(bmp.Pixels, bmp.Width, bmp.Height)
 // BM.Set('Convert')
 
-pixelJS.filter('blur').Blur(bmp.Pixels, bmp.Width, bmp.Height)
+pixelJS.filter('blur')(bmp.Pixels, bmp.Width, bmp.Height);
 BM.Set('Blur')
 
 bmp.Save('./test/dm_gray.bmp')

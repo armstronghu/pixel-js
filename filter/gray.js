@@ -18,7 +18,7 @@ function RGB2YCbCr(R, G, B) {
 
 module.exports = class GrayFilter {
 
-    static ConvertGray(pixels, width, height) {
+    static Set(pixels, width, height) {
         for (let i = 0, h = height; i < h; i++) {
             for (let j = 0, w = width; j < w; j++) {
                 let c = pixels[i][j]

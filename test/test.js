@@ -1,16 +1,14 @@
 'use strict'
 
-const pixelJS = require('../app')
+const pixelJS = require('../app');
 
-let bmp = new pixelJS()
-bmp.Load('./test/RED.BMP')
+let png = new pixelJS();
 
-let pixels = bmp.Pixels
-for (let i = 0, h = bmp.Height; i < h; i++) {
-    for (let j = 0, w = bmp.Width; j < w; j++) {
-        let c = pixels[i][j]
-        c.rgb = [0, 0, 255]
-    }
-}
+png.On('onloaded', () => {
 
-bmp.Save('./test/BLUE.bmp')
+    pixelJS.filter('gray')(png.Pixels, png.Width, png.Height)
+
+    png.Save('./test/gray_dog.png');
+});
+
+png.Load('./test/dog.png');

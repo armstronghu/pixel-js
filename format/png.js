@@ -62,9 +62,6 @@ const CUNKS_TYPE = {
     }
 }
 
-
-
-
 const Format = require('./defaultformatclass')
 module.exports = class PNG extends Format {
     constructor(binary) {

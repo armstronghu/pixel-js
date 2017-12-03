@@ -1,8 +1,8 @@
 module.exports = class Format {
     constructor(binary) {
         this.binary = binary;
-        this.header;
-        this.pixels;
+        // this.header;
+        // this.pixels;
     }
 
     static ToBinary() {}

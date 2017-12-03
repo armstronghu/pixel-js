@@ -32,7 +32,7 @@ function AdjustFilter(pixels, i, j, w, h, filter) {
 
 module.exports = class BlurFilter {
 
-    static Blur(pixels, width, height) {
+    static Set(pixels, width, height) {
         for (let i = 0, h = height; i < h; i++) {
             for (let j = 0, w = width; j < w; j++) {
                 AdjustFilter(pixels, i, j, width, height, Gaussian_Filter)
