@@ -62,7 +62,9 @@ module.exports = class pixelJS {
     static filter(filterType) {
         const __filter = {
             "gray": require('./filter/gray'),
-            "blur": require('./filter/blur')
+            "blur": require('./filter/blur'),
+            "bit": require('./filter/bit'),
+            "downsampling": require('./filter/downsampling'),
         }[filterType];
         if (__filter) {
             return __filter.Set
