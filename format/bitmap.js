@@ -1,7 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
-const {bType, lType} = require('../lib/type')
+const { bType, lType } = require('../lib/type')
 const Color = require('../lib/color')
 
 const FILE_HEADER = {
@@ -34,11 +34,13 @@ module.exports = class BMP extends Format {
 
         this.header = this.GetHeader();
         this.pixels = this.GetPixels();
+
+        process.nextTick(() => { this.event_map.emit('onloaded'); });
     }
 
     get Width() { return this.header.imageHeader.biWidth }
     get Height() { return this.header.imageHeader.biHeight }
-    
+
     GetHeader() {
         if (this.IsValid() == false) throw Error("binary가 존재하지 않습니다.")
 
@@ -133,7 +135,7 @@ module.exports = class BMP extends Format {
                 buffer.writeUInt8(color.B, 0);
                 buffer.writeUInt8(color.G, 1);
                 buffer.writeUInt8(color.R, 2);
-                
+
                 pixelBuffer = Buffer.concat([pixelBuffer, buffer])
             }
         }

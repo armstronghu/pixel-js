@@ -11,7 +11,7 @@ png.On('onloaded', () => {
     pixelJS.filter('downsampling')(png.Pixels, png.Width, png.Height, 5);
     pixelJS.filter('bright')(png.Pixels, png.Width, png.Height);
 
-    png.Save('./test/_cat.png');
+    png.Save('./test/_cat.bmp');
 });
 
-png.Load('./test/cat.png');
+png.Load('./test/cat.bmp');
