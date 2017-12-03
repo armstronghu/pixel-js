@@ -1,5 +1,5 @@
 # pixel-js
-
+# [pixel-js-k](https://github.com/keicoon/pixel-js) &middot; [![npm](https://img.shields.io/npm/v/pixel-js-k.svg)](https://www.npmjs.com/package/pixel-js-k)
 
 ### Dependency
 ```
