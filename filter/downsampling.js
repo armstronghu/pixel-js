@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = class BitFilter {
+module.exports = class DownsamplingFilter {
 
     static Set(pixels, width, height, slide = 2) {
         for (let i = 0, h = height; i < h; i += slide) {

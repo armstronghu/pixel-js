@@ -65,6 +65,7 @@ module.exports = class pixelJS {
             "blur": require('./filter/blur'),
             "bit": require('./filter/bit'),
             "downsampling": require('./filter/downsampling'),
+            "bright": require('./filter/bright'),
         }[filterType];
         if (__filter) {
             return __filter.Set
