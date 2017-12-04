@@ -2,16 +2,16 @@
 
 const pixelJS = require('../app');
 
-let png = new pixelJS();
+let pJS = new pixelJS();
 
-png.On('onloaded', () => {
+pJS.On('onloaded', () => {
 
-    pixelJS.filter('blur')(png.Pixels, png.Width, png.Height);
-    pixelJS.filter('bit')(png.Pixels, png.Width, png.Height, 3);
-    pixelJS.filter('downsampling')(png.Pixels, png.Width, png.Height, 5);
-    pixelJS.filter('bright')(png.Pixels, png.Width, png.Height);
+    pixelJS.filter('blur')(pJS.Pixels, pJS.Width, pJS.Height);
+    pixelJS.filter('bit')(pJS.Pixels, pJS.Width, pJS.Height, 3);
+    pixelJS.filter('downsampling')(pJS.Pixels, pJS.Width, pJS.Height, 5);
+    pixelJS.filter('bright')(pJS.Pixels, pJS.Width, pJS.Height);
 
-    png.Save('./test/_cat.bmp');
+    pJS.Save('./test/_cat.jpeg');
 });
 
-png.Load('./test/cat.bmp');
+pJS.Load('./test/cat.jpeg');

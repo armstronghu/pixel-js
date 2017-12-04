@@ -45,7 +45,7 @@ module.exports = class pixelJS {
         IsValidEXT(EXT)
 
         const FormatClass = GetFormatClass(EXT);
-        const binary = FormatClass.ToBinary(headerOption, this.Pixels, this.format)
+        const binary = FormatClass.ToBinary(headerOption, this.Pixels, this.format);
         BinarySaver(__filePath, binary)
 
         return true;
@@ -77,7 +77,7 @@ module.exports = class pixelJS {
     }
 }
 
-const SURPORTTED_TYPE = ['bmp', 'png'] //... jpeg, gif
+const SURPORTTED_TYPE = ['bmp', 'png', 'jpeg'] //... gif
 
 function GetPathToEXT(__filePath) {
     return _.last(_.split(__filePath, '.')).toLowerCase()
@@ -92,7 +92,8 @@ function IsValidEXT(EXT) {
 function GetFormatClass(EXT) {
     return {
         "bmp": require('./format/bitmap'),
-        "png": require('./format/pngjs')
+        "png": require('./format/pngjs'),
+        "jpeg": require('./format/jpeg')
     }[EXT];
 }
 
